@@ -1,0 +1,15 @@
+#!/bin/bash
+
+CUR=$(pwd)
+WKS=$(dirname $(readlink -f $0))
+
+cd $WKS
+
+STATUS=$(vagrant status | sed -n 3p)
+if [[ $STATUS == *"poweroff"* ]]; then
+  vagrant up && vagrant ssh
+else
+  vagrant halt --force && vagrant up && vagrant ssh
+fi
+
+cd $CUR

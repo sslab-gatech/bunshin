@@ -1,0 +1,102 @@
+
+case "${OSTYPE}" in
+*solaris*)
+  # Solaris case
+
+  # Solaris-specific variables
+  # SFW_HOME is installation root of SFW (Solaris FreeWare)
+  export SFW_HOME="/usr/sfw"
+
+  # CC_HOME is installation root of the C compiler
+  export CC_HOME="/usr/local/gcc-4.2.4"
+  #export CC_HOME="/usr/sfw"
+  # BINUTIL_HOME is installation root of the GNU binutils
+  export BINUTIL_HOME="/usr/sfw"
+  # GNUTOOL_HOME is installation root of the GNU tools
+  export GNUTOOL_HOME="${SFW_HOME}"
+  # BINARY_PREFIX is the string which is used as prefix for the GNU binaries
+  export BINARY_PREFIX="g"
+;;
+*)
+  # Linux + default case
+
+  # CC_HOME is installation root of the C compiler
+  export CC_HOME="/usr"
+  # BINUTIL_HOME is installation root of the GNU binutils
+  export BINUTIL_HOME="/usr"
+  # GNUTOOL_HOME is installation root of the GNU tools
+  export GNUTOOL_HOME="/usr"
+  # BINARY_PREFIX is the string which is used as prefix for the GNU binaries
+  export BINARY_PREFIX=""
+;;
+esac
+
+# Compilers and preprocessors
+export CC="$HOME/bft-workspace/llvm/build/bin/clang"
+export CXX="$HOME/bft-workspace/llvm/build/bin/clang++"
+export CPP="${CC_HOME}/bin/cpp"
+export CXXCPP=""
+
+# GNU Binutils
+export LD="${BINUTIL_HOME}/bin/${BINARY_PREFIX}ld"
+export AS="${BINUTIL_HOME}/bin/${BINARY_PREFIX}as"
+export AR="${BINUTIL_HOME}/bin/${BINARY_PREFIX}ar"
+export RANLIB="${BINUTIL_HOME}/bin/${BINARY_PREFIX}ranlib"
+export STRIP="${BINUTIL_HOME}/bin/${BINARY_PREFIX}strip"
+
+# GNU Tools
+export M4="${GNUTOOL_HOME}/bin/${BINARY_PREFIX}m4"
+export MAKE="${GNUTOOL_HOME}/bin/${BINARY_PREFIX}make"
+
+# Flags for increased portability of binaries
+PORTABILITY_FLAGS="-Wl,--hash-style=both,--as-needed"
+
+# Arguments to use
+export CPPFLAGS=""
+export CXXCPPFLAGS=""
+export LIBS="-lm"
+export EXTRA_LIBS=""
+export PARMACS_MACRO_FILE="pthreads"
+
+
+# OS-specific arguments
+case "${OSTYPE}" in
+*solaris*)
+  CFLAGS="${CFLAGS} -I${SFW_HOME}/include"
+  CXXFLAGS="${CXXFLAGS} -I${SFW_HOME}/include"
+  LDFLAGS="${LDFLAGS} -L${SFW_HOME}/lib"
+  ;;
+esac
+
+# Add PARSEC version to compiler flags
+if [ -f "${PARSECDIR}/version" ]; then
+  CFLAGS="${CFLAGS} -DPARSEC_VERSION=$(${CAT} ${PARSECDIR}/version)"
+  CXXFLAGS="${CXXFLAGS} -DPARSEC_VERSION=$(${CAT} ${PARSECDIR}/version)"
+fi
+
+# Java
+export JAVA_HOME="/usr"
+export JAVAC="${JAVA_HOME}/bin/javac"
+
+# Version numbers
+if [ -x ${CC} ]; then
+  CC_ver=$(${CC} --version)
+else
+  CC_ver=""
+fi
+if [ -x ${CXX} ]; then
+  CXX_ver=$(${CXX} --version)
+else
+  CXX_ver=""
+fi
+if [ -x ${LD} ]; then
+  LD_ver=$(${LD} --version)
+else
+  LD_ver=""
+fi
+if [ -x ${JAVAC} ]; then
+  JAVAC_ver=$(${JAVAC} -version 2>&1)
+else
+  JAVAC_ver=""
+fi
+

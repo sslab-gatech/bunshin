@@ -1,0 +1,68 @@
+#!/bin/bash
+
+USAGE="Usage: $0 <inst> ..."
+
+CUR=$(pwd)
+WKS=$(dirname $(readlink -f $0))
+
+KDIR=$WKS/kmvee
+KMVEE=$KDIR/kmvee.ko
+
+UDIR=$WKS/umvee
+LAUNCH=$UDIR/launcher
+SANDBOX=$UDIR/sandbox.so
+
+build(){
+  cd $KDIR
+  make clean
+  make $@
+
+  cd $UDIR
+  make clean
+  make $@
+}
+
+launch(){
+  sudo dmesg -C
+  sudo insmod $KMVEE 
+  sudo dmesg -c
+}
+
+finish(){
+  sudo dmesg -C
+  sudo rmmod $KMVEE
+  sudo dmesg -c
+}
+
+run(){
+  mvee=$SANDBOX $LAUNCH $@
+}
+
+buddy(){
+  mvee=$SANDBOX $LAUNCH 2 $1 $1 $@ 
+}
+
+triddy(){
+  mvee=$SANDBOX $LAUNCH 3 $1 $1 $1 $@
+}
+
+qualddy(){
+  mvee=$SANDBOX $LAUNCH 4 $1 $1 $1 $1 $@
+}
+
+INSTS=("build" "launch" "finish" "run" "buddy" "triddy" "qualddy")
+
+if [[ $# < 1 ]]; then
+  echo $USAGE; exit
+fi
+
+INST=$1
+shift 1
+
+if [[ "${INSTS[@]}" =~ $INST ]]; then
+  $INST $@
+else
+  echo $USAGE; exit
+fi
+
+cd $CUR

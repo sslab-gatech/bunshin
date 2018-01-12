@@ -1,0 +1,4 @@
+*.pyc
+__pycache__/
+syscall.list
+ignored.list

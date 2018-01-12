@@ -1,0 +1,9 @@
+#!/bin/bash
+
+T1=$(date +%s%3N)
+$@
+T2=$(date +%s%3N)
+
+T=$((T2 - T1))
+
+echo "[mvee] execution completed in $T milliseconds"

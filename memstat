@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+BUILD=$1
+OUTPUT=$2
+PROG=$3
+shift 3
+
+exec "$@" &
+
+
+cat /proc/self/status > $OUTPUT/$PROG-$BUILD-$RANDOM
